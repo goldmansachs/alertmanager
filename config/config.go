@@ -622,13 +622,7 @@ func DefaultGlobalConfig() GlobalConfig {
 		HTTPConfig:     &defaultHTTPConfig,
 
 		SMTPHello:       "localhost",
-		SMTPRequireTLS:  true,
 		PagerdutyURL:    mustParseURL("https://events.pagerduty.com/v2/enqueue"),
-		OpsGenieAPIURL:  mustParseURL("https://api.opsgenie.com/"),
-		WeChatAPIURL:    mustParseURL("https://qyapi.weixin.qq.com/cgi-bin/"),
-		VictorOpsAPIURL: mustParseURL("https://alert.victorops.com/integrations/generic/20131114/alert/"),
-		TelegramAPIUrl:  mustParseURL("https://api.telegram.org"),
-		WebexAPIURL:     mustParseURL("https://webexapis.com/v1/messages"),
 	}
 }
 

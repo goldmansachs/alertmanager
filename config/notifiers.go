@@ -273,9 +273,9 @@ type PagerdutyConfig struct {
 
 	HTTPConfig *commoncfg.HTTPClientConfig `yaml:"http_config,omitempty" json:"http_config,omitempty"`
 
-	ServiceKey     Secret            `yaml:"service_key,omitempty" json:"service_key,omitempty"`
+	ServiceKey     string            `yaml:"service_key,omitempty" json:"service_key,omitempty"`
 	ServiceKeyFile string            `yaml:"service_key_file,omitempty" json:"service_key_file,omitempty"`
-	RoutingKey     Secret            `yaml:"routing_key,omitempty" json:"routing_key,omitempty"`
+	RoutingKey     string            `yaml:"routing_key,omitempty" json:"routing_key,omitempty"`
 	RoutingKeyFile string            `yaml:"routing_key_file,omitempty" json:"routing_key_file,omitempty"`
 	URL            *URL              `yaml:"url,omitempty" json:"url,omitempty"`
 	Client         string            `yaml:"client,omitempty" json:"client,omitempty"`
