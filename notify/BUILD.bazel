@@ -1,0 +1,56 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "notify",
+    srcs = [
+        "notify.go",
+        "util.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/notify",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//inhibit",
+        "//nflog",
+        "//nflog/nflogpb",
+        "//silence",
+        "//template",
+        "//timeinterval",
+        "//types",
+        "@com_github_cenkalti_backoff_v4//:backoff",
+        "@com_github_cespare_xxhash_v2//:xxhash",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+        "@com_github_prometheus_common//version",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":notify",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "notify_test",
+    srcs = [
+        "notify_test.go",
+        "util_test.go",
+    ],
+    embed = [":notify"],
+    deps = [
+        "//nflog",
+        "//nflog/nflogpb",
+        "//silence",
+        "//silence/silencepb",
+        "//timeinterval",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+        "@in_gopkg_yaml_v2//:yaml_v2",
+    ],
+)

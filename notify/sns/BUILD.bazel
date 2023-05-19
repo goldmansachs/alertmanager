@@ -1,0 +1,36 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "sns",
+    srcs = ["sns.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/sns",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_aws_aws_sdk_go//aws",
+        "@com_github_aws_aws_sdk_go//aws/awserr",
+        "@com_github_aws_aws_sdk_go//aws/credentials",
+        "@com_github_aws_aws_sdk_go//aws/credentials/stscreds",
+        "@com_github_aws_aws_sdk_go//aws/session",
+        "@com_github_aws_aws_sdk_go//service/sns",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_prometheus_common//config",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":sns",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "sns_test",
+    srcs = ["sns_test.go"],
+    embed = [":sns"],
+    deps = ["@com_github_stretchr_testify//require"],
+)

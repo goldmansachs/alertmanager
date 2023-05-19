@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "nflogpb",
+    srcs = [
+        "nflog.pb.go",
+        "set.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/nflog/nflogpb",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gogo_protobuf//gogoproto",
+        "@com_github_gogo_protobuf//proto",
+        "@com_github_gogo_protobuf//types",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":nflogpb",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "nflogpb_test",
+    srcs = ["set_test.go"],
+    embed = [":nflogpb"],
+)

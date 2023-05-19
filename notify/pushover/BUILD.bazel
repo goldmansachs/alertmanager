@@ -1,0 +1,36 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "pushover",
+    srcs = ["pushover.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/pushover",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_prometheus_common//config",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":pushover",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "pushover_test",
+    srcs = ["pushover_test.go"],
+    embed = [":pushover"],
+    deps = [
+        "//config",
+        "//notify/test",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_stretchr_testify//require",
+    ],
+)

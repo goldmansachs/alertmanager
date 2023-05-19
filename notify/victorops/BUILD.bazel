@@ -1,0 +1,41 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "victorops",
+    srcs = ["victorops.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/victorops",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":victorops",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "victorops_test",
+    srcs = ["victorops_test.go"],
+    embed = [":victorops"],
+    deps = [
+        "//config",
+        "//notify",
+        "//notify/test",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

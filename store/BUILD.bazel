@@ -1,0 +1,29 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "store",
+    srcs = ["store.go"],
+    importpath = "github.com/prometheus/alertmanager/store",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//types",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":store",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "store_test",
+    srcs = ["store_test.go"],
+    embed = [":store"],
+    deps = [
+        "//types",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

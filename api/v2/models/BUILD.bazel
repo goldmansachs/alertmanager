@@ -1,0 +1,43 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "models",
+    srcs = [
+        "alert.go",
+        "alert_group.go",
+        "alert_groups.go",
+        "alert_status.go",
+        "alertmanager_config.go",
+        "alertmanager_status.go",
+        "cluster_status.go",
+        "gettable_alert.go",
+        "gettable_alerts.go",
+        "gettable_silence.go",
+        "gettable_silences.go",
+        "label_set.go",
+        "matcher.go",
+        "matchers.go",
+        "peer_status.go",
+        "postable_alert.go",
+        "postable_alerts.go",
+        "postable_silence.go",
+        "receiver.go",
+        "silence.go",
+        "silence_status.go",
+        "version_info.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/api/v2/models",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_strfmt//:strfmt",
+        "@com_github_go_openapi_swag//:swag",
+        "@com_github_go_openapi_validate//:validate",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":models",
+    visibility = ["//visibility:public"],
+)

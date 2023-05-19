@@ -1,0 +1,39 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "webex",
+    srcs = ["webex.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/webex",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_prometheus_common//config",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":webex",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "webex_test",
+    srcs = ["webex_test.go"],
+    embed = [":webex"],
+    deps = [
+        "//config",
+        "//notify",
+        "//notify/test",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

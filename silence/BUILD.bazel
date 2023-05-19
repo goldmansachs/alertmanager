@@ -1,0 +1,44 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "silence",
+    srcs = ["silence.go"],
+    importpath = "github.com/prometheus/alertmanager/silence",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cluster",
+        "//pkg/labels",
+        "//silence/silencepb",
+        "//types",
+        "@com_github_benbjohnson_clock//:clock",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_gofrs_uuid//:uuid",
+        "@com_github_matttproud_golang_protobuf_extensions//pbutil",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":silence",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "silence_test",
+    srcs = ["silence_test.go"],
+    embed = [":silence"],
+    deps = [
+        "//silence/silencepb",
+        "//types",
+        "@com_github_benbjohnson_clock//:clock",
+        "@com_github_go_kit_log//:log",
+        "@com_github_matttproud_golang_protobuf_extensions//pbutil",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

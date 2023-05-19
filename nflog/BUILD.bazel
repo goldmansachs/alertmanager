@@ -1,0 +1,33 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "nflog",
+    srcs = ["nflog.go"],
+    importpath = "github.com/prometheus/alertmanager/nflog",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cluster",
+        "//nflog/nflogpb",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_matttproud_golang_protobuf_extensions//pbutil",
+        "@com_github_prometheus_client_golang//prometheus",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":nflog",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "nflog_test",
+    srcs = ["nflog_test.go"],
+    embed = [":nflog"],
+    deps = [
+        "//nflog/nflogpb",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_stretchr_testify//require",
+    ],
+)

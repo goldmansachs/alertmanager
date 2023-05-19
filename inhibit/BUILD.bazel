@@ -1,0 +1,41 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "inhibit",
+    srcs = ["inhibit.go"],
+    importpath = "github.com/prometheus/alertmanager/inhibit",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//pkg/labels",
+        "//provider",
+        "//store",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_oklog_run//:run",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":inhibit",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "inhibit_test",
+    srcs = ["inhibit_test.go"],
+    embed = [":inhibit"],
+    deps = [
+        "//config",
+        "//pkg/labels",
+        "//provider",
+        "//store",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+    ],
+)

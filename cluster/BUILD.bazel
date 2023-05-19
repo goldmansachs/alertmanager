@@ -1,0 +1,58 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "cluster",
+    srcs = [
+        "advertise.go",
+        "channel.go",
+        "cluster.go",
+        "connection_pool.go",
+        "delegate.go",
+        "tls_config.go",
+        "tls_connection.go",
+        "tls_transport.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/cluster",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cluster/clusterpb",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_gogo_protobuf//proto",
+        "@com_github_hashicorp_go_sockaddr//:go-sockaddr",
+        "@com_github_hashicorp_golang_lru//:golang-lru",
+        "@com_github_hashicorp_memberlist//:memberlist",
+        "@com_github_oklog_ulid//:ulid",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_exporter_toolkit//web",
+        "@in_gopkg_yaml_v2//:yaml_v2",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":cluster",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "cluster_test",
+    srcs = [
+        "advertise_test.go",
+        "channel_test.go",
+        "cluster_test.go",
+        "tls_connection_test.go",
+        "tls_transport_test.go",
+    ],
+    data = glob(["testdata/**"]),
+    embed = [":cluster"],
+    deps = [
+        "@com_github_go_kit_log//:log",
+        "@com_github_hashicorp_go_sockaddr//:go-sockaddr",
+        "@com_github_hashicorp_memberlist//:memberlist",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_stretchr_testify//require",
+    ],
+)

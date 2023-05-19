@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "with_api_v2",
+    srcs = [
+        "acceptance.go",
+        "collector.go",
+        "mock.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/test/with_api_v2",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/client",
+        "//api/v2/client/alert",
+        "//api/v2/client/general",
+        "//api/v2/client/silence",
+        "//api/v2/models",
+        "//notify/webhook",
+        "@com_github_go_openapi_runtime//client",
+        "@com_github_go_openapi_strfmt//:strfmt",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":with_api_v2",
+    visibility = ["//visibility:public"],
+)

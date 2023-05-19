@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "wechat",
+    srcs = ["wechat.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/wechat",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_common//config",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":wechat",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "wechat_test",
+    srcs = ["wechat_test.go"],
+    embed = [":wechat"],
+    deps = [
+        "//config",
+        "//notify/test",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_stretchr_testify//require",
+    ],
+)

@@ -1,0 +1,50 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "dispatch",
+    srcs = [
+        "dispatch.go",
+        "route.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/dispatch",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//pkg/labels",
+        "//provider",
+        "//store",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":dispatch",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "dispatch_test",
+    srcs = [
+        "dispatch_test.go",
+        "route_test.go",
+    ],
+    embed = [":dispatch"],
+    deps = [
+        "//config",
+        "//notify",
+        "//provider/mem",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_client_golang//prometheus/testutil",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+        "@in_gopkg_yaml_v2//:yaml_v2",
+    ],
+)

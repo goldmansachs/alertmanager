@@ -1,0 +1,67 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+
+go_library(
+    name = "alertmanager_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/prometheus/alertmanager/cmd/alertmanager",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//api",
+        "//cluster",
+        "//config",
+        "//dispatch",
+        "//inhibit",
+        "//nflog",
+        "//notify",
+        "//notify/discord",
+        "//notify/email",
+        "//notify/opsgenie",
+        "//notify/pagerduty",
+        "//notify/pushover",
+        "//notify/slack",
+        "//notify/sns",
+        "//notify/telegram",
+        "//notify/victorops",
+        "//notify/webex",
+        "//notify/webhook",
+        "//notify/wechat",
+        "//provider/mem",
+        "//silence",
+        "//template",
+        "//timeinterval",
+        "//types",
+        "//ui",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_client_golang//prometheus/promhttp",
+        "@com_github_prometheus_common//model",
+        "@com_github_prometheus_common//promlog",
+        "@com_github_prometheus_common//promlog/flag",
+        "@com_github_prometheus_common//route",
+        "@com_github_prometheus_common//version",
+        "@com_github_prometheus_exporter_toolkit//web",
+        "@com_github_prometheus_exporter_toolkit//web/kingpinflag",
+        "@in_gopkg_alecthomas_kingpin_v2//:kingpin_v2",
+    ],
+)
+
+go_binary(
+    name = "alertmanager",
+    embed = [":alertmanager_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "alertmanager_test",
+    srcs = ["main_test.go"],
+    embed = [":alertmanager_lib"],
+    deps = [
+        "//config",
+        "//notify",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_stretchr_testify//require",
+    ],
+)

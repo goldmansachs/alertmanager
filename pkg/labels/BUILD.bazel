@@ -1,0 +1,30 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "labels",
+    srcs = [
+        "matcher.go",
+        "parse.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/pkg/labels",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":labels",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "labels_test",
+    srcs = [
+        "matcher_test.go",
+        "parse_test.go",
+    ],
+    embed = [":labels"],
+)

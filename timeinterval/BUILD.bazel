@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "timeinterval",
+    srcs = ["timeinterval.go"],
+    importpath = "github.com/prometheus/alertmanager/timeinterval",
+    visibility = ["//visibility:public"],
+    deps = ["@in_gopkg_yaml_v2//:yaml_v2"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":timeinterval",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "timeinterval_test",
+    srcs = ["timeinterval_test.go"],
+    embed = [":timeinterval"],
+    deps = ["@in_gopkg_yaml_v2//:yaml_v2"],
+)

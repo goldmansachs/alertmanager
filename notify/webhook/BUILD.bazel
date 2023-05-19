@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "webhook",
+    srcs = ["webhook.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/webhook",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_prometheus_common//config",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":webhook",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "webhook_test",
+    srcs = ["webhook_test.go"],
+    embed = [":webhook"],
+    deps = [
+        "//config",
+        "//notify/test",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_stretchr_testify//require",
+    ],
+)

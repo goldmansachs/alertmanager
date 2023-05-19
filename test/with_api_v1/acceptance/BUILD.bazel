@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "acceptance_test",
+    srcs = [
+        "inhibit_test.go",
+        "send_test.go",
+        "silence_test.go",
+        "web_test.go",
+    ],
+    deps = ["//test/with_api_v1"],
+)

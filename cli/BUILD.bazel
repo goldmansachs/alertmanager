@@ -1,0 +1,70 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "cli",
+    srcs = [
+        "alert.go",
+        "alert_add.go",
+        "alert_query.go",
+        "check_config.go",
+        "cluster.go",
+        "config.go",
+        "root.go",
+        "routing.go",
+        "silence.go",
+        "silence_add.go",
+        "silence_expire.go",
+        "silence_import.go",
+        "silence_query.go",
+        "silence_update.go",
+        "template.go",
+        "template_render.go",
+        "test_routing.go",
+        "utils.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/cli",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/client",
+        "//api/v2/client/alert",
+        "//api/v2/client/general",
+        "//api/v2/client/silence",
+        "//api/v2/models",
+        "//cli/config",
+        "//cli/format",
+        "//config",
+        "//dispatch",
+        "//pkg/labels",
+        "//template",
+        "@com_github_go_openapi_runtime//client",
+        "@com_github_go_openapi_strfmt//:strfmt",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+        "@com_github_prometheus_common//version",
+        "@com_github_xlab_treeprint//:treeprint",
+        "@in_gopkg_alecthomas_kingpin_v2//:kingpin_v2",
+        "@org_golang_x_mod//semver",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":cli",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "cli_test",
+    srcs = [
+        "check_config_test.go",
+        "test_routing_test.go",
+    ],
+    data = glob(["testdata/**"]),
+    embed = [":cli"],
+    deps = [
+        "//api/v2/models",
+        "//config",
+        "//dispatch",
+    ],
+)

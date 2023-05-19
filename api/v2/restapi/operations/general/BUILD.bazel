@@ -1,0 +1,25 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "general",
+    srcs = [
+        "get_status.go",
+        "get_status_parameters.go",
+        "get_status_responses.go",
+        "get_status_urlbuilder.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/api/v2/restapi/operations/general",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/models",
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_runtime//:runtime",
+        "@com_github_go_openapi_runtime//middleware",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":general",
+    visibility = ["//visibility:public"],
+)

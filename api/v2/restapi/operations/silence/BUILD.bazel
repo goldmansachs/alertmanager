@@ -1,0 +1,40 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "silence",
+    srcs = [
+        "delete_silence.go",
+        "delete_silence_parameters.go",
+        "delete_silence_responses.go",
+        "delete_silence_urlbuilder.go",
+        "get_silence.go",
+        "get_silence_parameters.go",
+        "get_silence_responses.go",
+        "get_silence_urlbuilder.go",
+        "get_silences.go",
+        "get_silences_parameters.go",
+        "get_silences_responses.go",
+        "get_silences_urlbuilder.go",
+        "post_silences.go",
+        "post_silences_parameters.go",
+        "post_silences_responses.go",
+        "post_silences_urlbuilder.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/api/v2/restapi/operations/silence",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/models",
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_runtime//:runtime",
+        "@com_github_go_openapi_runtime//middleware",
+        "@com_github_go_openapi_strfmt//:strfmt",
+        "@com_github_go_openapi_swag//:swag",
+        "@com_github_go_openapi_validate//:validate",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":silence",
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "amtool_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/prometheus/alertmanager/cmd/amtool",
+    visibility = ["//visibility:private"],
+    deps = ["//cli"],
+)
+
+go_binary(
+    name = "amtool",
+    embed = [":amtool_lib"],
+    visibility = ["//visibility:public"],
+)

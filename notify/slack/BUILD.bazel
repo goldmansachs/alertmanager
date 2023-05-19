@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "slack",
+    srcs = ["slack.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/slack",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_common//config",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":slack",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "slack_test",
+    srcs = ["slack_test.go"],
+    embed = [":slack"],
+    deps = [
+        "//config",
+        "//notify/test",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_stretchr_testify//require",
+    ],
+)

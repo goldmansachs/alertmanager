@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "format",
+    srcs = [
+        "format.go",
+        "format_extended.go",
+        "format_json.go",
+        "format_simple.go",
+        "sort.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/cli/format",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/models",
+        "//pkg/labels",
+        "@com_github_go_openapi_strfmt//:strfmt",
+        "@in_gopkg_alecthomas_kingpin_v2//:kingpin_v2",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":format",
+    visibility = ["//visibility:public"],
+)

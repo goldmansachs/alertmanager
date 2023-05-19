@@ -1,0 +1,32 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "template",
+    srcs = ["template.go"],
+    importpath = "github.com/prometheus/alertmanager/template",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//asset",
+        "//types",
+        "@com_github_prometheus_common//model",
+        "@org_golang_x_text//cases",
+        "@org_golang_x_text//language",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":template",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "template_test",
+    srcs = ["template_test.go"],
+    embed = [":template"],
+    deps = [
+        "//types",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

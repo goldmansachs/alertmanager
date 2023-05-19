@@ -1,0 +1,27 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "alertgroup",
+    srcs = [
+        "get_alert_groups.go",
+        "get_alert_groups_parameters.go",
+        "get_alert_groups_responses.go",
+        "get_alert_groups_urlbuilder.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/api/v2/restapi/operations/alertgroup",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/models",
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_runtime//:runtime",
+        "@com_github_go_openapi_runtime//middleware",
+        "@com_github_go_openapi_strfmt//:strfmt",
+        "@com_github_go_openapi_swag//:swag",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":alertgroup",
+    visibility = ["//visibility:public"],
+)

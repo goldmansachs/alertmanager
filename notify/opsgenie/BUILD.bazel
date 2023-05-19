@@ -1,0 +1,41 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "opsgenie",
+    srcs = ["opsgenie.go"],
+    importpath = "github.com/prometheus/alertmanager/notify/opsgenie",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//notify",
+        "//template",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":opsgenie",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "opsgenie_test",
+    srcs = ["opsgenie_test.go"],
+    embed = [":opsgenie"],
+    deps = [
+        "//config",
+        "//notify",
+        "//notify/test",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

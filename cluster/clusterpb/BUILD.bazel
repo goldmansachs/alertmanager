@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "clusterpb",
+    srcs = ["cluster.pb.go"],
+    importpath = "github.com/prometheus/alertmanager/cluster/clusterpb",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gogo_protobuf//gogoproto",
+        "@com_github_gogo_protobuf//proto",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":clusterpb",
+    visibility = ["//visibility:public"],
+)

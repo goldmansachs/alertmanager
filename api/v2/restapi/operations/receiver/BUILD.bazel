@@ -1,0 +1,25 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "receiver",
+    srcs = [
+        "get_receivers.go",
+        "get_receivers_parameters.go",
+        "get_receivers_responses.go",
+        "get_receivers_urlbuilder.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/api/v2/restapi/operations/receiver",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/models",
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_runtime//:runtime",
+        "@com_github_go_openapi_runtime//middleware",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":receiver",
+    visibility = ["//visibility:public"],
+)

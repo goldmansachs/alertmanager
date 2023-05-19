@@ -1,0 +1,46 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "api",
+    srcs = ["api.go"],
+    importpath = "github.com/prometheus/alertmanager/api/v1",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/metrics",
+        "//cluster",
+        "//config",
+        "//dispatch",
+        "//pkg/labels",
+        "//provider",
+        "//silence",
+        "//silence/silencepb",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_go_kit_log//level",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+        "@com_github_prometheus_common//route",
+        "@com_github_prometheus_common//version",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":api",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "api_test",
+    srcs = ["api_test.go"],
+    embed = [":api"],
+    deps = [
+        "//config",
+        "//dispatch",
+        "//pkg/labels",
+        "//provider",
+        "//types",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+    ],
+)

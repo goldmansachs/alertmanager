@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "restapi",
+    srcs = [
+        "configure_alertmanager.go",
+        "doc.go",
+        "embedded_spec.go",
+        "server.go",
+    ],
+    importpath = "github.com/prometheus/alertmanager/api/v2/restapi",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v2/restapi/operations",
+        "//api/v2/restapi/operations/alert",
+        "//api/v2/restapi/operations/alertgroup",
+        "//api/v2/restapi/operations/general",
+        "//api/v2/restapi/operations/receiver",
+        "//api/v2/restapi/operations/silence",
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_runtime//:runtime",
+        "@com_github_go_openapi_runtime//flagext",
+        "@com_github_go_openapi_runtime//middleware",
+        "@com_github_go_openapi_swag//:swag",
+        "@com_github_jessevdk_go_flags//:go-flags",
+        "@org_golang_x_net//netutil",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":restapi",
+    visibility = ["//visibility:public"],
+)

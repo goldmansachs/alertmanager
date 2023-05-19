@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "api",
+    srcs = ["api.go"],
+    importpath = "github.com/prometheus/alertmanager/api",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api/v1:api",
+        "//api/v2:api",
+        "//cluster",
+        "//config",
+        "//dispatch",
+        "//provider",
+        "//silence",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_common//model",
+        "@com_github_prometheus_common//route",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":api",
+    visibility = ["//visibility:public"],
+)
