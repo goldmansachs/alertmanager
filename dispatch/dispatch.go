@@ -267,7 +267,13 @@ func (d *Dispatcher) Groups(routeFilter func(*Route) bool, alertFilter func(*typ
 			groups = append(groups, alertGroup)
 		}
 	}
-	sort.Sort(groups)
+	//sort.Sort(groups)
+	sort.Slice(groups, func(i, j int) bool {
+		if groups[i].Labels.Equal(groups[j].Labels) {
+			return groups[i].Receiver < groups[j].Receiver
+		}
+		return groups[i].Labels.Before(groups[j].Labels)
+	})
 	for i := range groups {
 		sort.Sort(groups[i].Alerts)
 	}
