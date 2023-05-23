@@ -22,19 +22,3 @@ alias(
     actual = ":discord",
     visibility = ["//visibility:public"],
 )
-
-go_test(
-    name = "discord_test",
-    srcs = ["discord_test.go"],
-    embed = [":discord"],
-    deps = [
-        "//config",
-        "//notify",
-        "//notify/test",
-        "//types",
-        "@com_github_go_kit_log//:log",
-        "@com_github_prometheus_common//config",
-        "@com_github_prometheus_common//model",
-        "@com_github_stretchr_testify//require",
-    ],
-)

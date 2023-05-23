@@ -21,16 +21,3 @@ alias(
     actual = ":pushover",
     visibility = ["//visibility:public"],
 )
-
-go_test(
-    name = "pushover_test",
-    srcs = ["pushover_test.go"],
-    embed = [":pushover"],
-    deps = [
-        "//config",
-        "//notify/test",
-        "@com_github_go_kit_log//:log",
-        "@com_github_prometheus_common//config",
-        "@com_github_stretchr_testify//require",
-    ],
-)

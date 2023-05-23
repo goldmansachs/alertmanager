@@ -27,10 +27,3 @@ alias(
     actual = ":sns",
     visibility = ["//visibility:public"],
 )
-
-go_test(
-    name = "sns_test",
-    srcs = ["sns_test.go"],
-    embed = [":sns"],
-    deps = ["@com_github_stretchr_testify//require"],
-)

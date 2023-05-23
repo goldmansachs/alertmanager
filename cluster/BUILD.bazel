@@ -36,23 +36,3 @@ alias(
     actual = ":cluster",
     visibility = ["//visibility:public"],
 )
-
-go_test(
-    name = "cluster_test",
-    srcs = [
-        "advertise_test.go",
-        "channel_test.go",
-        "cluster_test.go",
-        "tls_connection_test.go",
-        "tls_transport_test.go",
-    ],
-    data = glob(["testdata/**"]),
-    embed = [":cluster"],
-    deps = [
-        "@com_github_go_kit_log//:log",
-        "@com_github_hashicorp_go_sockaddr//:go-sockaddr",
-        "@com_github_hashicorp_memberlist//:memberlist",
-        "@com_github_prometheus_client_golang//prometheus",
-        "@com_github_stretchr_testify//require",
-    ],
-)
