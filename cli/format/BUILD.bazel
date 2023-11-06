@@ -14,8 +14,8 @@ go_library(
     deps = [
         "//api/v2/models",
         "//pkg/labels",
+        "@com_github_alecthomas_kingpin_v2//:kingpin",
         "@com_github_go_openapi_strfmt//:strfmt",
-        "@in_gopkg_alecthomas_kingpin_v2//:kingpin_v2",
     ],
 )
 

@@ -38,7 +38,9 @@ go_test(
         "@com_github_go_kit_log//:log",
         "@com_github_matttproud_golang_protobuf_extensions//pbutil",
         "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_client_golang//prometheus/testutil",
         "@com_github_prometheus_common//model",
         "@com_github_stretchr_testify//require",
+        "@org_uber_go_atomic//:atomic",
     ],
 )

@@ -22,3 +22,16 @@ alias(
     actual = ":wechat",
     visibility = ["//visibility:public"],
 )
+
+go_test(
+    name = "wechat_test",
+    srcs = ["wechat_test.go"],
+    embed = [":wechat"],
+    deps = [
+        "//config",
+        "//notify/test",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_stretchr_testify//require",
+    ],
+)

@@ -22,3 +22,20 @@ alias(
     actual = ":telegram",
     visibility = ["//visibility:public"],
 )
+
+go_test(
+    name = "telegram_test",
+    srcs = ["telegram_test.go"],
+    embed = [":telegram"],
+    deps = [
+        "//config",
+        "//notify",
+        "//notify/test",
+        "//types",
+        "@com_github_go_kit_log//:log",
+        "@com_github_prometheus_common//config",
+        "@com_github_prometheus_common//model",
+        "@com_github_stretchr_testify//require",
+        "@in_gopkg_yaml_v2//:yaml_v2",
+    ],
+)

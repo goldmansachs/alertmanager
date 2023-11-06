@@ -15,6 +15,7 @@ go_library(
         "//notify",
         "//notify/discord",
         "//notify/email",
+        "//notify/msteams",
         "//notify/opsgenie",
         "//notify/pagerduty",
         "//notify/pushover",
@@ -31,6 +32,7 @@ go_library(
         "//timeinterval",
         "//types",
         "//ui",
+        "@com_github_alecthomas_kingpin_v2//:kingpin",
         "@com_github_go_kit_log//:log",
         "@com_github_go_kit_log//level",
         "@com_github_pkg_errors//:errors",
@@ -43,7 +45,6 @@ go_library(
         "@com_github_prometheus_common//version",
         "@com_github_prometheus_exporter_toolkit//web",
         "@com_github_prometheus_exporter_toolkit//web/kingpinflag",
-        "@in_gopkg_alecthomas_kingpin_v2//:kingpin_v2",
     ],
 )
 

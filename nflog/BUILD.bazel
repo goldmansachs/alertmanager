@@ -8,6 +8,7 @@ go_library(
     deps = [
         "//cluster",
         "//nflog/nflogpb",
+        "@com_github_benbjohnson_clock//:clock",
         "@com_github_go_kit_log//:log",
         "@com_github_go_kit_log//level",
         "@com_github_matttproud_golang_protobuf_extensions//pbutil",
@@ -27,7 +28,10 @@ go_test(
     embed = [":nflog"],
     deps = [
         "//nflog/nflogpb",
+        "@com_github_benbjohnson_clock//:clock",
         "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_client_golang//prometheus/testutil",
         "@com_github_stretchr_testify//require",
+        "@org_uber_go_atomic//:atomic",
     ],
 )

@@ -54,6 +54,7 @@ go_test(
     deps = [
         "//api/v2/models",
         "//api/v2/restapi/operations/general",
+        "//api/v2/restapi/operations/receiver",
         "//api/v2/restapi/operations/silence",
         "//config",
         "//pkg/labels",

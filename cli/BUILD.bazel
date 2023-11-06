@@ -36,6 +36,7 @@ go_library(
         "//dispatch",
         "//pkg/labels",
         "//template",
+        "@com_github_alecthomas_kingpin_v2//:kingpin",
         "@com_github_go_openapi_runtime//client",
         "@com_github_go_openapi_strfmt//:strfmt",
         "@com_github_pkg_errors//:errors",
@@ -43,7 +44,6 @@ go_library(
         "@com_github_prometheus_common//model",
         "@com_github_prometheus_common//version",
         "@com_github_xlab_treeprint//:treeprint",
-        "@in_gopkg_alecthomas_kingpin_v2//:kingpin_v2",
         "@org_golang_x_mod//semver",
     ],
 )
