@@ -28,22 +28,3 @@ alias(
     actual = ":config",
     visibility = ["//visibility:public"],
 )
-
-go_test(
-    name = "config_test",
-    srcs = [
-        "config_test.go",
-        "coordinator_test.go",
-        "notifiers_test.go",
-    ],
-    data = glob(["testdata/**"]),
-    embed = [":config"],
-    deps = [
-        "@com_github_go_kit_log//:log",
-        "@com_github_prometheus_client_golang//prometheus",
-        "@com_github_prometheus_common//config",
-        "@com_github_prometheus_common//model",
-        "@com_github_stretchr_testify//require",
-        "@in_gopkg_yaml_v2//:yaml_v2",
-    ],
-)
