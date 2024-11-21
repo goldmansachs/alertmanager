@@ -631,10 +631,12 @@ func (api *API) getSilenceHandler(params silence_ops.GetSilenceParams) middlewar
 func (api *API) deleteSilenceHandler(params silence_ops.DeleteSilenceParams) middleware.Responder {
 	logger := api.requestLogger(params.HTTPRequest)
 
-	if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Secret != api.alertmanagerConfig.Global.SilenceSecret {
-		msg := "Failed to delete silence: incorrect secret"
-		level.Error(logger).Log("msg", msg)
-		return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
+	if api.alertmanagerConfig != nil {
+		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Secret != api.alertmanagerConfig.Global.SilenceSecret {
+			msg := "Failed to delete silence: incorrect secret"
+			level.Error(logger).Log("msg", msg)
+			return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
+		}
 	}
 
 	sid := params.SilenceID.String()
@@ -650,13 +652,13 @@ func (api *API) deleteSilenceHandler(params silence_ops.DeleteSilenceParams) mid
 
 func (api *API) postSilencesHandler(params silence_ops.PostSilencesParams) middleware.Responder {
 	logger := api.requestLogger(params.HTTPRequest)
-
-	if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Silence.Secret != api.alertmanagerConfig.Global.SilenceSecret  {
-		msg := "Failed to set silence: incorrect secret"
-		level.Error(logger).Log("msg", msg)
-		return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
+	if api.alertmanagerConfig != nil {
+		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Silence.Secret != api.alertmanagerConfig.Global.SilenceSecret  {
+			msg := "Failed to set silence: incorrect secret"
+			level.Error(logger).Log("msg", msg)
+			return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
+		}
 	}
-
 	sil, err := PostableSilenceToProto(params.Silence)
 	if err != nil {
 		level.Error(logger).Log("msg", "Failed to marshal silence to proto", "err", err)
