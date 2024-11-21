@@ -415,6 +415,8 @@ type Silence struct {
 	Comment   string `json:"comment,omitempty"`
 
 	Status SilenceStatus `json:"status"`
+
+	Secret string `json:"secret",omitempty`
 }
 
 // Expired return if the silence is expired

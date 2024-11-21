@@ -35,6 +35,7 @@ type silenceUpdateCmd struct {
 	end      string
 	comment  string
 	ids      []string
+	secret   string
 }
 
 func configureSilenceUpdateCmd(cc *kingpin.CmdClause) {
@@ -47,6 +48,8 @@ func configureSilenceUpdateCmd(cc *kingpin.CmdClause) {
 	updateCmd.Flag("start", "Set when the silence should start. RFC3339 format 2006-01-02T15:04:05-07:00").StringVar(&c.start)
 	updateCmd.Flag("end", "Set when the silence should end (overwrites duration). RFC3339 format 2006-01-02T15:04:05-07:00").StringVar(&c.end)
 	updateCmd.Flag("comment", "A comment to help describe the silence").Short('c').StringVar(&c.comment)
+	updateCmd.Flag("secret", "Secret to authorise silence expiration").Short('s').StringVar(&c.secret)
+
 	updateCmd.Arg("update-ids", "Silence IDs to update").StringsVar(&c.ids)
 
 	updateCmd.Action(execWithTimeout(c.update))
@@ -102,6 +105,10 @@ func (c *silenceUpdateCmd) update(ctx context.Context, _ *kingpin.ParseContext) 
 
 		if c.comment != "" {
 			sil.Comment = &c.comment
+		}
+
+		if c.secret != "" {
+			sil.Secret = c.secret
 		}
 
 		ps := &models.PostableSilence{

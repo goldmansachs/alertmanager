@@ -488,6 +488,14 @@ func (api *API) setSilence(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(api.config.Global.SilenceSecret) > 0 && sil.Secret != api.config.Global.SilenceSecret {
+		api.respondError(w, apiError{
+			typ: errorBadData,
+			err: errors.New("failed to set silence: incorrect secret"),
+		}, nil)
+		return
+	}
+
 	// This is an API only validation, it cannot be done internally
 	// because the expired silence is semantically important.
 	// But one should not be able to create expired silences, that
@@ -554,6 +562,23 @@ func (api *API) getSilence(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) delSilence(w http.ResponseWriter, r *http.Request) {
+	var sil types.Silence
+	if err := api.receive(r, &sil); err != nil {
+		api.respondError(w, apiError{
+			typ: errorBadData,
+			err: err,
+		}, nil)
+		return
+	}
+
+	if len(api.config.Global.SilenceSecret) > 0 && sil.Secret != api.config.Global.SilenceSecret {
+		api.respondError(w, apiError{
+			typ: errorBadData,
+			err: errors.New("failed to delete silence: incorrect secret"),
+		}, nil)
+		return
+	}
+	
 	sid := route.Param(r.Context(), "sid")
 
 	if err := api.silences.Expire(sid); err != nil {

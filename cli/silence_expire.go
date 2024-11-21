@@ -24,7 +24,8 @@ import (
 )
 
 type silenceExpireCmd struct {
-	ids []string
+	ids       []string
+	secret    string
 }
 
 func configureSilenceExpireCmd(cc *kingpin.CmdClause) {
@@ -33,6 +34,7 @@ func configureSilenceExpireCmd(cc *kingpin.CmdClause) {
 		expireCmd = cc.Command("expire", "expire an alertmanager silence")
 	)
 	expireCmd.Arg("silence-ids", "Ids of silences to expire").StringsVar(&c.ids)
+	expireCmd.Flag("secret", "Secret to authorise silence expiration").Short('s').StringVar(&c.secret)
 	expireCmd.Action(execWithTimeout(c.expire))
 }
 
@@ -46,6 +48,7 @@ func (c *silenceExpireCmd) expire(ctx context.Context, _ *kingpin.ParseContext) 
 	for _, id := range c.ids {
 		params := silence.NewDeleteSilenceParams().WithContext(ctx)
 		params.SilenceID = strfmt.UUID(id)
+		params.Secret = c.secret
 		_, err := amclient.Silence.DeleteSilence(params)
 		if err != nil {
 			return err

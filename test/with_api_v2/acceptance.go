@@ -21,6 +21,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 	"syscall"
 	"testing"
@@ -466,6 +467,10 @@ func (am *Alertmanager) SetSilence(at float64, sil *TestSilence) {
 				},
 			),
 		)
+		// don't fail on incorrect secret
+		if err!= nil && strings.Contains(err.Error(), "incorrect secret") {
+			return
+		}
 		if err != nil {
 			am.t.Errorf("Error setting silence %v: %s", sil, err)
 			return
@@ -485,7 +490,7 @@ func (amc *AlertmanagerCluster) DelSilence(at float64, sil *TestSilence) {
 func (am *Alertmanager) DelSilence(at float64, sil *TestSilence) {
 	am.t.Do(at, func() {
 		_, err := am.clientV2.Silence.DeleteSilence(
-			silence.NewDeleteSilenceParams().WithSilenceID(strfmt.UUID(sil.ID())),
+			silence.NewDeleteSilenceParams().WithSilenceID(strfmt.UUID(sil.ID())).WithSecret(sil.secret),
 		)
 		if err != nil {
 			am.t.Errorf("Error deleting silence %v: %s", sil, err)

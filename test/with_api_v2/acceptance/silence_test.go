@@ -75,6 +75,65 @@ receivers:
 	t.Log(co.Check())
 }
 
+func TestSilencingWithSecret(t *testing.T) {
+	t.Parallel()
+
+	conf := `
+global:
+  silence_secret: "secret"
+route:
+  receiver: "default"
+  group_by: []
+  group_wait:      1s
+  group_interval:  1s
+  repeat_interval: 1ms
+
+receivers:
+- name: "default"
+  webhook_configs:
+  - url: 'http://%s'
+`
+
+	at := NewAcceptanceTest(t, &AcceptanceOpts{
+		Tolerance: 150 * time.Millisecond,
+	})
+
+	co := at.Collector("webhook")
+	wh := NewWebhook(t, co)
+
+	amc := at.AlertmanagerCluster(fmt.Sprintf(conf, wh.Address()), 1)
+
+	// No repeat interval is configured. Thus, we receive an alert
+	// notification every second.
+	amc.Push(At(1), Alert("alertname", "test1").Active(1))
+	amc.Push(At(1), Alert("alertname", "test2").Active(1))
+
+	co.Want(Between(2, 2.5),
+		Alert("alertname", "test1").Active(1),
+		Alert("alertname", "test2").Active(1),
+	)
+
+	// Add a silence that affects the first alert.
+	amc.SetSilence(At(2.3), SilenceSecret(2.5, 4.5, "secret").Match("alertname", "test1"))
+
+	// Add a silence that affects the second alert with a wrong secret - should have no effect.
+	amc.SetSilence(At(2.3), SilenceSecret(2.5, 4.5, "wrong-secret").Match("alertname", "test2"))
+
+	co.Want(Between(3, 3.5), Alert("alertname", "test2").Active(1))
+	co.Want(Between(4, 4.5), Alert("alertname", "test2").Active(1))
+
+	// Silence should be over now and we receive both alerts again.
+
+	co.Want(Between(5, 5.5),
+		Alert("alertname", "test1").Active(1),
+		Alert("alertname", "test2").Active(1),
+	)
+
+	at.Run()
+
+	t.Log(co.Check())
+}
+
 func TestSilenceDelete(t *testing.T) {
 	t.Parallel()
 
@@ -110,6 +169,56 @@ receivers:
 	// two iterations.
 	sil := Silence(1.5, 100).MatchRE("alertname", ".+")
 
+	amc.SetSilence(At(1.3), sil)
+	amc.DelSilence(At(3.5), sil)
+
+	co.Want(Between(3.5, 4.5),
+		Alert("alertname", "test1").Active(1),
+		Alert("alertname", "test2").Active(1),
+	)
+
+	at.Run()
+
+	t.Log(co.Check())
+}
+
+func TestSilenceDeleteWithSecret(t *testing.T) {
+	t.Parallel()
+
+	conf := `
+global:
+  silence_secret: "secret"
+route:
+  receiver: "default"
+  group_by: []
+  group_wait:      1s
+  group_interval:  1s
+  repeat_interval: 1ms
+
+receivers:
+- name: "default"
+  webhook_configs:
+  - url: 'http://%s'
+`
+
+	at := NewAcceptanceTest(t, &AcceptanceOpts{
+		Tolerance: 150 * time.Millisecond,
+	})
+
+	co := at.Collector("webhook")
+	wh := NewWebhook(t, co)
+
+	amc := at.AlertmanagerCluster(fmt.Sprintf(conf, wh.Address()), 1)
+
+	// No repeat interval is configured. Thus, we receive an alert
+	// notification every second.
+	amc.Push(At(1), Alert("alertname", "test1").Active(1))
+	amc.Push(At(1), Alert("alertname", "test2").Active(1))
+
+	// Silence everything for a long time and delete the silence after
+	// two iterations.
+	sil := SilenceSecret(1.5, 100,"secret").MatchRE("alertname", ".+")
+	
 	amc.SetSilence(At(1.3), sil)
 	amc.DelSilence(At(3.5), sil)
 
