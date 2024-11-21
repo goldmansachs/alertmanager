@@ -50,6 +50,49 @@ func (o *DeleteSilenceOK) WriteResponse(rw http.ResponseWriter, producer runtime
 	rw.WriteHeader(200)
 }
 
+// DeleteSilenceBadRequestCode is the HTTP code returned for type DeleteSilenceBadRequest
+const DeleteSilenceBadRequestCode int = 400
+
+/*
+DeleteSilenceBadRequest Bad request
+
+swagger:response deleteSilenceBadRequest
+*/
+type DeleteSilenceBadRequest struct {
+
+	/*
+	  In: Body
+	*/
+	Payload string `json:"body,omitempty"`
+}
+
+// NewDeleteSilenceBadRequest creates DeleteSilenceBadRequest with default headers values
+func NewDeleteSilenceBadRequest() *DeleteSilenceBadRequest {
+
+	return &DeleteSilenceBadRequest{}
+}
+
+// WithPayload adds the payload to the delete silence bad request response
+func (o *DeleteSilenceBadRequest) WithPayload(payload string) *DeleteSilenceBadRequest {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete silence bad request response
+func (o *DeleteSilenceBadRequest) SetPayload(payload string) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteSilenceBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(400)
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
+	}
+}
+
 // DeleteSilenceNotFoundCode is the HTTP code returned for type DeleteSilenceNotFound
 const DeleteSilenceNotFoundCode int = 404
 

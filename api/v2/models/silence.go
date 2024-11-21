@@ -50,6 +50,9 @@ type Silence struct {
 	// Required: true
 	Matchers Matchers `json:"matchers"`
 
+	// secret
+	Secret string `json:"secret,omitempty"`
+
 	// starts at
 	// Required: true
 	// Format: date-time

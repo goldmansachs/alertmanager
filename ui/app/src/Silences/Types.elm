@@ -12,6 +12,7 @@ import Time
 nullSilence : PostableSilence
 nullSilence =
     { id = Nothing
+    , secret = Nothing
     , createdBy = ""
     , comment = ""
     , startsAt = Time.millisToPosix 0

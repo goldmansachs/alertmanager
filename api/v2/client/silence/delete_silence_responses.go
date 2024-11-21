@@ -41,6 +41,12 @@ func (o *DeleteSilenceReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewDeleteSilenceBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewDeleteSilenceNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -105,6 +111,67 @@ func (o *DeleteSilenceOK) String() string {
 }
 
 func (o *DeleteSilenceOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteSilenceBadRequest creates a DeleteSilenceBadRequest with default headers values
+func NewDeleteSilenceBadRequest() *DeleteSilenceBadRequest {
+	return &DeleteSilenceBadRequest{}
+}
+
+/*
+DeleteSilenceBadRequest describes a response with status code 400, with default header values.
+
+Bad request
+*/
+type DeleteSilenceBadRequest struct {
+	Payload string
+}
+
+// IsSuccess returns true when this delete silence bad request response has a 2xx status code
+func (o *DeleteSilenceBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete silence bad request response has a 3xx status code
+func (o *DeleteSilenceBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete silence bad request response has a 4xx status code
+func (o *DeleteSilenceBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete silence bad request response has a 5xx status code
+func (o *DeleteSilenceBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete silence bad request response a status code equal to that given
+func (o *DeleteSilenceBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+func (o *DeleteSilenceBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /silence/{silenceID}][%d] deleteSilenceBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *DeleteSilenceBadRequest) String() string {
+	return fmt.Sprintf("[DELETE /silence/{silenceID}][%d] deleteSilenceBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *DeleteSilenceBadRequest) GetPayload() string {
+	return o.Payload
+}
+
+func (o *DeleteSilenceBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

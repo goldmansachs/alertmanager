@@ -75,6 +75,12 @@ DeleteSilenceParams contains all the parameters to send to the API endpoint
 */
 type DeleteSilenceParams struct {
 
+	/* Secret.
+
+	   secret
+	*/
+	Secret string
+
 	/* SilenceID.
 
 	   ID of the silence to get
@@ -136,6 +142,17 @@ func (o *DeleteSilenceParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithSecret adds the secret to the delete silence params
+func (o *DeleteSilenceParams) WithSecret(secret string) *DeleteSilenceParams {
+	o.SetSecret(secret)
+	return o
+}
+
+// SetSecret adds the secret to the delete silence params
+func (o *DeleteSilenceParams) SetSecret(secret string) {
+	o.Secret = secret
+}
+
 // WithSilenceID adds the silenceID to the delete silence params
 func (o *DeleteSilenceParams) WithSilenceID(silenceID strfmt.UUID) *DeleteSilenceParams {
 	o.SetSilenceID(silenceID)
@@ -154,6 +171,9 @@ func (o *DeleteSilenceParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
+	if err := r.SetBodyParam(o.Secret); err != nil {
+		return err
+	}
 
 	// path param silenceID
 	if err := r.SetPathParam("silenceID", o.SilenceID.String()); err != nil {

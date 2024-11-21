@@ -118,6 +118,12 @@ paths:
       operationId: deleteSilence
       description: Delete a silence by its ID
       parameters:
+        - in: body
+          name: secret
+          description: secret
+          required: true
+          schema:
+            type: string
         - in: path
           name: silenceID
           type: string
@@ -127,6 +133,8 @@ paths:
       responses:
         '200':
           description: Delete silence response
+        '400':
+          $ref: '#/responses/BadRequest'
         '404':
           description: A silence with the specified ID was not found
         '500':
@@ -340,6 +348,8 @@ definitions:
       createdBy:
         type: string
       comment:
+        type: string
+      secret:
         type: string
     required:
       - matchers

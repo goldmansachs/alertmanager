@@ -59,6 +59,7 @@ type TestSilence struct {
 	match            []string
 	matchRE          []string
 	startsAt, endsAt float64
+	secret           string
 
 	mtx sync.RWMutex
 }
@@ -69,6 +70,14 @@ func Silence(start, end float64) *TestSilence {
 	return &TestSilence{
 		startsAt: start,
 		endsAt:   end,
+	}
+}
+
+func SilenceSecret(start, end float64, secret string) *TestSilence {
+	return &TestSilence{
+		startsAt: start,
+		endsAt:   end,
+		secret:   secret,
 	}
 }
 
@@ -85,6 +94,13 @@ func (s *TestSilence) MatchRE(v ...string) *TestSilence {
 	}
 	s.matchRE = append(s.matchRE, v...)
 	return s
+}
+
+// SetSecret sets the silence secret.
+func (s *TestSilence) SetSecret(secret string) {
+	s.mtx.Lock()
+	defer s.mtx.Unlock()
+	s.secret = secret
 }
 
 // SetID sets the silence ID.
@@ -135,6 +151,7 @@ func (s *TestSilence) nativeSilence(opts *AcceptanceOpts) *models.Silence {
 	createdBy := "admin@example.com"
 	nsil.Comment = &comment
 	nsil.CreatedBy = &createdBy
+	nsil.Secret = s.secret
 
 	return nsil
 }

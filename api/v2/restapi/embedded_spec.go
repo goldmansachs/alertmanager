@@ -260,6 +260,15 @@ func init() {
         "operationId": "deleteSilence",
         "parameters": [
           {
+            "description": "secret",
+            "name": "secret",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "type": "string",
             "format": "uuid",
             "description": "ID of the silence to get",
@@ -271,6 +280,9 @@ func init() {
         "responses": {
           "200": {
             "description": "Delete silence response"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequest"
           },
           "404": {
             "description": "A silence with the specified ID was not found"
@@ -731,6 +743,9 @@ func init() {
         "matchers": {
           "$ref": "#/definitions/matchers"
         },
+        "secret": {
+          "type": "string"
+        },
         "startsAt": {
           "type": "string",
           "format": "date-time"
@@ -1068,6 +1083,15 @@ func init() {
         "operationId": "deleteSilence",
         "parameters": [
           {
+            "description": "secret",
+            "name": "secret",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "type": "string",
             "format": "uuid",
             "description": "ID of the silence to get",
@@ -1079,6 +1103,12 @@ func init() {
         "responses": {
           "200": {
             "description": "Delete silence response"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
           },
           "404": {
             "description": "A silence with the specified ID was not found"
@@ -1547,6 +1577,9 @@ func init() {
         },
         "matchers": {
           "$ref": "#/definitions/matchers"
+        },
+        "secret": {
+          "type": "string"
         },
         "startsAt": {
           "type": "string",
