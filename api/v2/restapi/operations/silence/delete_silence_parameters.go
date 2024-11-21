@@ -20,9 +20,11 @@ package silence
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
@@ -45,6 +47,11 @@ type DeleteSilenceParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
+	/*secret
+	  Required: true
+	  In: body
+	*/
+	Secret string
 	/*ID of the silence to get
 	  Required: true
 	  In: path
@@ -60,6 +67,23 @@ func (o *DeleteSilenceParams) BindRequest(r *http.Request, route *middleware.Mat
 	var res []error
 
 	o.HTTPRequest = r
+
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body string
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			if err == io.EOF {
+				res = append(res, errors.Required("secret", "body", ""))
+			} else {
+				res = append(res, errors.NewParseError("secret", "body", "", err))
+			}
+		} else {
+			// no validation required on inline body
+			o.Secret = body
+		}
+	} else {
+		res = append(res, errors.Required("secret", "body", ""))
+	}
 
 	rSilenceID, rhkSilenceID, _ := route.Params.GetOK("silenceID")
 	if err := o.bindSilenceID(rSilenceID, rhkSilenceID, route.Formats); err != nil {

@@ -352,6 +352,18 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return fmt.Errorf("at most one of smtp_auth_password & smtp_auth_password_file must be configured")
 	}
 
+	if len(c.Global.SilenceSecret) > 0 && len(c.Global.SilenceSecretFile) > 0 {
+		return fmt.Errorf("at most one of silence_secret & silence_secret_file must be configured")
+	}
+
+	if len(c.Global.SilenceSecretFile) > 0 {
+		content, err := os.ReadFile(c.Global.SilenceSecretFile)
+		if err != nil {
+			return fmt.Errorf("could not read %s: %w", c.Global.SilenceSecretFile, err)
+		}
+		c.Global.SilenceSecret = string(content)
+	}
+	
 	names := map[string]struct{}{}
 
 	for _, rcv := range c.Receivers {
@@ -741,6 +753,8 @@ type GlobalConfig struct {
 	SMTPAuthUsername     string     `yaml:"smtp_auth_username,omitempty" json:"smtp_auth_username,omitempty"`
 	SMTPAuthPassword     Secret     `yaml:"smtp_auth_password,omitempty" json:"smtp_auth_password,omitempty"`
 	SMTPAuthPasswordFile string     `yaml:"smtp_auth_password_file,omitempty" json:"smtp_auth_password_file,omitempty"`
+	SilenceSecret        string     `yaml:"silence_secret,omitempty" json:"silence_secret,omitempty"`
+	SilenceSecretFile    string     `yaml:"silence_secret_file,omitempty" json:"silence_secret_file,omitempty"`
 	SMTPAuthSecret       Secret     `yaml:"smtp_auth_secret,omitempty" json:"smtp_auth_secret,omitempty"`
 	SMTPAuthIdentity     string     `yaml:"smtp_auth_identity,omitempty" json:"smtp_auth_identity,omitempty"`
 	SMTPRequireTLS       bool       `yaml:"smtp_require_tls" json:"smtp_require_tls,omitempty"`

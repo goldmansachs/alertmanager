@@ -44,6 +44,7 @@ type silenceAddCmd struct {
 	end            string
 	comment        string
 	matchers       []string
+	secret         string
 }
 
 const silenceAddHelp = `Add a new alertmanager silence
@@ -81,6 +82,7 @@ func configureSilenceAddCmd(cc *kingpin.CmdClause) {
 	addCmd.Flag("start", "Set when the silence should start. RFC3339 format 2006-01-02T15:04:05-07:00").StringVar(&c.start)
 	addCmd.Flag("end", "Set when the silence should end (overwrites duration). RFC3339 format 2006-01-02T15:04:05-07:00").StringVar(&c.end)
 	addCmd.Flag("comment", "A comment to help describe the silence").Short('c').StringVar(&c.comment)
+	addCmd.Flag("secret", "Secret to authorise silence creation").Short('s').StringVar(&c.secret)
 	addCmd.Arg("matcher-groups", "Query filter").StringsVar(&c.matchers)
 	addCmd.Action(execWithTimeout(c.add))
 }
@@ -152,6 +154,7 @@ func (c *silenceAddCmd) add(ctx context.Context, _ *kingpin.ParseContext) error 
 			EndsAt:    &end,
 			CreatedBy: &c.author,
 			Comment:   &c.comment,
+			Secret:    c.secret,
 		},
 	}
 	silenceParams := silence.NewPostSilencesParams().WithContext(ctx).

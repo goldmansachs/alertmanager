@@ -1,8 +1,8 @@
 module Views.SilenceForm.Views exposing (view)
 
 import Data.GettableAlert exposing (GettableAlert)
-import Html exposing (Html, button, div, h1, i, input, label, strong, text)
-import Html.Attributes exposing (class, style)
+import Html exposing (Html, a, button, div, h1, i, input, label, strong, text)
+import Html.Attributes exposing (class, href, style)
 import Html.Events exposing (onClick)
 import Utils.DateTimePicker.Views exposing (viewDateTimePicker)
 import Utils.Filter exposing (SilenceFormGetParams)
@@ -28,25 +28,7 @@ view maybeId silenceFormGetParams defaultCreator { form, filterBar, filterBarVal
     in
     div []
         [ h1 [] [ text title ]
-        , timeInput form.startsAt form.endsAt form.duration
-        , matchersInput filterBarValid filterBar
-        , validatedField input
-            "Creator"
-            inputSectionPadding
-            (UpdateCreatedBy >> UpdateField)
-            (ValidateCreatedBy |> UpdateField)
-            form.createdBy
-        , validatedTextareaField
-            "Comment"
-            inputSectionPadding
-            (UpdateComment >> UpdateField)
-            (ValidateComment |> UpdateField)
-            form.comment
-        , div [ class inputSectionPadding ]
-            [ informationBlock activeAlertId silenceId alerts
-            , silenceActionButtons maybeId resetClick
-            ]
-        , dateTimePickerDialog form
+        , a [ href "https://airlock.sre.gs.com/alertmanager/silence" ] [ text "Manage silences with Airlock" ]
         ]
 
 
