@@ -361,7 +361,7 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if err != nil {
 			return fmt.Errorf("could not read %s: %w", c.Global.SilenceSecretFile, err)
 		}
-		c.Global.SilenceSecret = string(content)
+		c.Global.SilenceSecret = strings.TrimSpace(string(content))
 	}
 	
 	names := map[string]struct{}{}
