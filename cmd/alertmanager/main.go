@@ -209,6 +209,9 @@ func run() int {
 		maintenanceInterval = kingpin.Flag("data.maintenance-interval", "Interval between garbage collection and snapshotting to disk of the silences and the notification logs.").Default("15m").Duration()
 		alertGCInterval     = kingpin.Flag("alerts.gc-interval", "Interval between alert GC.").Default("30m").Duration()
 
+		silenceSecret = kingpin.Flag("silence.secret", "Secret for silence API calls").String()
+		silenceSecretFile = kingpin.Flag("silence.secret.file", "File containing secret for silence API calls").String()
+
 		webConfig      = webflag.AddFlags(kingpin.CommandLine, ":9093")
 		externalURL    = kingpin.Flag("web.external-url", "The URL under which Alertmanager is externally reachable (for example, if Alertmanager is served via a reverse proxy). Used for generating relative and absolute links back to Alertmanager itself. If the URL has a path portion, it will be used to prefix all HTTP endpoints served by Alertmanager. If omitted, relevant URL components will be derived automatically.").String()
 		routePrefix    = kingpin.Flag("web.route-prefix", "Prefix for the internal routes of web endpoints. Defaults to path of --web.external-url.").String()
@@ -241,6 +244,11 @@ func run() int {
 	kingpin.Parse()
 
 	logger := promlog.New(&promlogConfig)
+
+	if len(*silenceSecret) > 0 && len(*silenceSecretFile) > 0 {
+		level.Error(logger).Log("msg", "Configure only 1 of silence.secret and silence.secret.file")
+		return 1
+	}
 
 	level.Info(logger).Log("msg", "Starting Alertmanager", "version", version.Info())
 	level.Info(logger).Log("build_context", version.BuildContext())
@@ -495,6 +503,21 @@ func run() int {
 		)
 		configuredReceivers.Set(float64(len(activeReceivers)))
 		configuredIntegrations.Set(float64(integrationsNum))
+
+
+		// set/override SilenceSecret if flag is set
+		if len(*silenceSecret) > 0 {
+			level.Info(logger).Log("msg", "Setting silence secret from command line")
+			conf.Global.SilenceSecret = strings.TrimSpace(*silenceSecret)
+		}
+		if len(*silenceSecretFile) > 0 {
+			level.Info(logger).Log("msg", "Setting silence secret file from command line")
+			content, err := os.ReadFile(*silenceSecretFile)
+			if err != nil {
+				return fmt.Errorf("could not read %s: %w", *silenceSecretFile, err)
+			}
+			conf.Global.SilenceSecret = strings.TrimSpace(string(content))
+		}
 
 		api.Update(conf, func(labels model.LabelSet) {
 			inhibitor.Mutes(labels)
