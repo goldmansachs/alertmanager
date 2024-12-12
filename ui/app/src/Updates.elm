@@ -48,9 +48,7 @@ update msg ({ basePath, apiUrl } as model) =
             )
 
         NavigateToSilenceFormNew params ->
-            ( { model | route = SilenceFormNewRoute params }
-            , Task.perform (NewSilenceFromMatchersAndComment model.defaultCreator >> MsgForSilenceForm) (Task.succeed params)
-            )
+            ( model, Navigation.load ("https://airlock.sre.gs.com/alertmanager/silence?" ++ model.query) )
 
         NavigateToSilenceFormEdit uuid ->
             ( { model | route = SilenceFormEditRoute uuid }, Task.perform identity (Task.succeed <| (FetchSilence uuid |> MsgForSilenceForm)) )
