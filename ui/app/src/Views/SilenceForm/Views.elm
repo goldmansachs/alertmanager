@@ -28,7 +28,7 @@ view maybeId silenceFormGetParams defaultCreator { form, filterBar, filterBarVal
     in
     div []
         [ h1 [] [ text title ]
-        , a [ href "https://airlock.sre.gs.com/alertmanager/silence" ] [ text "Manage silences with Airlock" ]
+        , a [ href "https://airlock.sre.gs.com/alertmanager/silence" ] [ text "You must now manage silences with Airlock" ]
         ]
 
 
