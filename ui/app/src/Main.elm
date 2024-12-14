@@ -122,6 +122,7 @@ init flags url key =
             key
             { firstDayOfWeek = firstDayOfWeek
             }
+            url.host
             (  Array.get 1 (Array.fromList (String.split "?" (Url.toString url)) ) |> Maybe.withDefault "" )
         )
 
