@@ -488,7 +488,7 @@ func (api *API) setSilence(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(api.config.Global.SilenceSecret) > 0 && sil.Secret != api.config.Global.SilenceSecret {
+	if len(api.config.Global.SilenceSecret) > 0 && sil.Secret != string(api.config.Global.SilenceSecret) {
 		api.respondError(w, apiError{
 			typ: errorBadData,
 			err: errors.New("failed to set silence: incorrect secret"),
@@ -571,7 +571,7 @@ func (api *API) delSilence(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(api.config.Global.SilenceSecret) > 0 && sil.Secret != api.config.Global.SilenceSecret {
+	if len(api.config.Global.SilenceSecret) > 0 && sil.Secret != string(api.config.Global.SilenceSecret) {
 		api.respondError(w, apiError{
 			typ: errorBadData,
 			err: errors.New("failed to delete silence: incorrect secret"),
