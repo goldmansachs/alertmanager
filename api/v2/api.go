@@ -632,7 +632,7 @@ func (api *API) deleteSilenceHandler(params silence_ops.DeleteSilenceParams) mid
 	logger := api.requestLogger(params.HTTPRequest)
 
 	if api.alertmanagerConfig != nil {
-		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Secret != api.alertmanagerConfig.Global.SilenceSecret {
+		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Secret != string(api.alertmanagerConfig.Global.SilenceSecret) {
 			msg := "Failed to delete silence: incorrect secret"
 			level.Error(logger).Log("msg", msg)
 			return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
@@ -653,7 +653,7 @@ func (api *API) deleteSilenceHandler(params silence_ops.DeleteSilenceParams) mid
 func (api *API) postSilencesHandler(params silence_ops.PostSilencesParams) middleware.Responder {
 	logger := api.requestLogger(params.HTTPRequest)
 	if api.alertmanagerConfig != nil {
-		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Silence.Secret != api.alertmanagerConfig.Global.SilenceSecret  {
+		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Silence.Secret != string(api.alertmanagerConfig.Global.SilenceSecret)  {
 			msg := "Failed to set silence: incorrect secret"
 			level.Error(logger).Log("msg", msg)
 			return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)

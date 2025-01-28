@@ -361,7 +361,7 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if err != nil {
 			return fmt.Errorf("could not read %s: %w", c.Global.SilenceSecretFile, err)
 		}
-		c.Global.SilenceSecret = strings.TrimSpace(string(content))
+		c.Global.SilenceSecret = Secret(strings.TrimSpace(string(content)))
 	}
 	
 	names := map[string]struct{}{}
@@ -753,7 +753,7 @@ type GlobalConfig struct {
 	SMTPAuthUsername     string     `yaml:"smtp_auth_username,omitempty" json:"smtp_auth_username,omitempty"`
 	SMTPAuthPassword     Secret     `yaml:"smtp_auth_password,omitempty" json:"smtp_auth_password,omitempty"`
 	SMTPAuthPasswordFile string     `yaml:"smtp_auth_password_file,omitempty" json:"smtp_auth_password_file,omitempty"`
-	SilenceSecret        string     `yaml:"silence_secret,omitempty" json:"silence_secret,omitempty"`
+	SilenceSecret        Secret     `yaml:"silence_secret,omitempty" json:"silence_secret,omitempty"`
 	SilenceSecretFile    string     `yaml:"silence_secret_file,omitempty" json:"silence_secret_file,omitempty"`
 	SMTPAuthSecret       Secret     `yaml:"smtp_auth_secret,omitempty" json:"smtp_auth_secret,omitempty"`
 	SMTPAuthIdentity     string     `yaml:"smtp_auth_identity,omitempty" json:"smtp_auth_identity,omitempty"`

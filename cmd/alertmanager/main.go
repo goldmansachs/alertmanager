@@ -508,7 +508,7 @@ func run() int {
 		// set/override SilenceSecret if flag is set
 		if len(*silenceSecret) > 0 {
 			level.Info(logger).Log("msg", "Setting silence secret from command line")
-			conf.Global.SilenceSecret = strings.TrimSpace(*silenceSecret)
+			conf.Global.SilenceSecret = config.Secret(strings.TrimSpace(*silenceSecret))
 		}
 		if len(*silenceSecretFile) > 0 {
 			level.Info(logger).Log("msg", "Setting silence secret file from command line")
@@ -516,7 +516,7 @@ func run() int {
 			if err != nil {
 				return fmt.Errorf("could not read %s: %w", *silenceSecretFile, err)
 			}
-			conf.Global.SilenceSecret = strings.TrimSpace(string(content))
+			conf.Global.SilenceSecret = config.Secret(strings.TrimSpace(string(content)))
 		}
 
 		api.Update(conf, func(labels model.LabelSet) {
