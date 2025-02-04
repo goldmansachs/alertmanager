@@ -1,4 +1,4 @@
-module github.com/prometheus/alertmanager
+module github.com/goldmansachs/alertmanager
 
 go 1.22.0
 
@@ -29,6 +29,7 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.4
 	github.com/oklog/run v1.1.0
 	github.com/oklog/ulid v1.3.1
+	github.com/prometheus/alertmanager v0.0.0-00010101000000-000000000000
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/common v0.60.1
 	github.com/prometheus/common/assets v0.2.0
@@ -105,3 +106,5 @@ require (
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/prometheus/alertmanager => ./
