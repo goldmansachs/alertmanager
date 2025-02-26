@@ -17,7 +17,6 @@ import Views.SilenceForm.Types exposing (initSilenceForm)
 import Views.SilenceList.Types exposing (initSilenceList)
 import Views.SilenceView.Types exposing (initSilenceView)
 import Views.Status.Types exposing (initStatusModel)
-import Array
 
 
 main : Program Json.Value Model Msg
@@ -123,7 +122,6 @@ init flags url key =
             { firstDayOfWeek = firstDayOfWeek
             }
             url.host
-            (  Array.get 1 (Array.fromList (String.split "?" (Url.toString url)) ) |> Maybe.withDefault "" )
         )
 
 
