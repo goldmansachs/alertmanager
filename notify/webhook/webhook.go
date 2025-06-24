@@ -109,6 +109,8 @@ func (n *Notifier) Notify(ctx context.Context, alerts ...*types.Alert) (bool, er
 	} else {
 		content, err := os.ReadFile(n.conf.URLFile)
 		if err != nil {
+			// Log the error for debugging 
+			level.Debug(n.logger).Log("msg", "Failed to read URL file", "file", n.conf.URLFile, "err", err)
 			return false, fmt.Errorf("read url_file: %w", err)
 		}
 		url = strings.TrimSpace(string(content))
@@ -122,6 +124,33 @@ func (n *Notifier) Notify(ctx context.Context, alerts ...*types.Alert) (bool, er
 
 	shouldRetry, err := n.retrier.Check(resp.StatusCode, resp.Body)
 	if err != nil {
+		if resp.Body != nil {
+			// Log the error details for debugging purposes.
+			bodyBytes, readErr := io.ReadAll(resp.Body)
+			if readErr != nil {
+				level.Debug(n.logger).Log(
+					"msg", "Failed to read response body for error details",
+					"url", url,
+					"readErr", readErr,
+					"err", err,
+				)
+			} else {
+				level.Debug(n.logger).Log(
+					"msg", "Response body for error details",
+					"url", url,
+					"body", string(bodyBytes),
+					"err", err,
+				)
+			}
+		} else {
+			// Log configuration details to help debug faulty configuration.
+			level.Debug(n.logger).Log(
+				"msg", "No response body received; possible faulty configuration",
+				"url", url,
+				"url_file", n.conf.URLFile,
+				"message", fmt.Sprintf("%+v", msg),
+			)
+		}
 		return shouldRetry, notify.NewErrorWithReason(notify.GetFailureReasonFromStatusCode(resp.StatusCode), err)
 	}
 	return shouldRetry, err

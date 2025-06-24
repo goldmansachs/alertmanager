@@ -164,6 +164,8 @@ func (n *Notifier) notifyV1(
 	if serviceKey == "" {
 		content, fileErr := os.ReadFile(n.conf.ServiceKeyFile)
 		if fileErr != nil {
+			// save details of the error for debugging
+			level.Debug(n.logger).Log("msg", "Failed to read service key file", "file", n.conf.ServiceKeyFile, "err", fileErr)
 			return false, errors.Wrap(fileErr, "failed to read service key from file")
 		}
 		serviceKey = strings.TrimSpace(string(content))
@@ -202,7 +204,41 @@ func (n *Notifier) notifyV1(
 	}
 	defer notify.Drain(resp)
 
-	return n.retrier.Check(resp.StatusCode, resp.Body)
+	shouldRetry, err := n.retrier.Check(resp.StatusCode, resp.Body)
+	if err != nil {
+		if resp.Body != nil {
+			// Log the error details for debugging purposes.
+			bodyBytes, readErr := io.ReadAll(resp.Body)
+			if readErr != nil {
+				level.Debug(n.logger).Log(
+					"msg", "Failed to read response body for error details",
+					"provider", "pagerduty",
+					"url", n.apiV1,
+					"readErr", readErr,
+					"err", err,
+				)
+			} else {
+				level.Debug(n.logger).Log(
+					"msg", "Response body for error details",
+					"provider", "pagerduty",
+					"url", n.apiV1,
+					"body", string(bodyBytes),
+					"err", err,
+				)
+			}
+		} else {
+			// Log configuration details to help debug faulty configuration.
+			level.Debug(n.logger).Log(
+				"msg", "No response body received; possible faulty configuration",
+				"provider", "pagerduty",
+				"url", n.apiV1,
+				"service_key_file", n.conf.ServiceKeyFile,
+				"message", fmt.Sprintf("%+v", msg),
+			)
+		}
+		return shouldRetry, err
+	}
+	return shouldRetry, err
 }
 
 func (n *Notifier) notifyV2(
@@ -229,6 +265,8 @@ func (n *Notifier) notifyV2(
 	if routingKey == "" {
 		content, fileErr := os.ReadFile(n.conf.RoutingKeyFile)
 		if fileErr != nil {
+			// save details of the error for debugging
+			level.Debug(n.logger).Log("msg", "Failed to read routing key file", "file", n.conf.RoutingKeyFile, "err", fileErr)
 			return false, errors.Wrap(fileErr, "failed to read routing key from file")
 		}
 		routingKey = strings.TrimSpace(string(content))
@@ -277,6 +315,7 @@ func (n *Notifier) notifyV2(
 	}
 
 	if tmplErr != nil {
+		level.Debug(n.logger).Log("msg", "Failed to template PagerDuty v2 message", "err", tmplErr)
 		return false, errors.Wrap(tmplErr, "failed to template PagerDuty v2 message")
 	}
 
@@ -298,6 +337,35 @@ func (n *Notifier) notifyV2(
 
 	retry, err := n.retrier.Check(resp.StatusCode, resp.Body)
 	if err != nil {
+		if resp.Body != nil {
+			// Log the error details for debugging purposes.
+			bodyBytes, readErr := io.ReadAll(resp.Body)
+			if readErr != nil {
+				level.Debug(n.logger).Log(
+					"msg", "Failed to read response body for error details",
+					"provider", "pagerduty",
+					"url", n.conf.URL.String(),
+					"readErr", readErr,
+					"err", err,
+				)
+			} else {
+				level.Debug(n.logger).Log(
+					"msg", "Response body for error details",
+					"provider", "pagerduty",
+					"url", n.conf.URL.String(),
+					"body", string(bodyBytes),
+					"err", err,
+				)
+			}
+		} else {
+			// Log configuration details to help debug faulty configuration.
+			level.Debug(n.logger).Log(
+				"msg", "No response body received; possible faulty configuration",
+				"url", n.conf.URL.String(),
+				"routing_key_file", n.conf.RoutingKeyFile,
+				"message", fmt.Sprintf("%+v", msg),
+			)
+		}
 		return retry, notify.NewErrorWithReason(notify.GetFailureReasonFromStatusCode(resp.StatusCode), err)
 	}
 	return retry, err
