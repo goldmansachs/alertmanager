@@ -29,7 +29,7 @@ type alias Model =
     , expandAll : Bool
     , key : Key
     , settings : SettingsView.Model
-    , host: String
+    , host : String
     , query : String
     }
 
