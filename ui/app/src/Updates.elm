@@ -59,7 +59,7 @@ update msg ({ basePath, apiUrl } as model) =
                         else
                             ""
                        )
-                    ++ "airlock.sre.gs.com/alertmanager/silence?"
+                    ++ "airlock.sre.gs.com/alertmanager/silences/create?"
                     ++ "filter="
                     ++ (params.matchers
                             |> stringifyFilter
