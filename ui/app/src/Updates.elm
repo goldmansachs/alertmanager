@@ -3,6 +3,8 @@ module Updates exposing (update)
 import Browser.Navigation as Navigation
 import Task
 import Types exposing (Model, Msg(..), Route(..))
+import Url exposing (percentEncode)
+import Utils.Filter exposing (stringifyFilter)
 import Views.AlertList.Types exposing (AlertListMsg(..))
 import Views.AlertList.Updates
 import Views.Settings.Updates
@@ -48,8 +50,24 @@ update msg ({ basePath, apiUrl } as model) =
             )
 
         NavigateToSilenceFormNew params ->
-            ( { model | route = SilenceFormNewRoute params }
-            , Task.perform (NewSilenceFromMatchersAndComment model.defaultCreator >> MsgForSilenceForm) (Task.succeed params)
+            ( model
+            , Navigation.load
+                ("https://"
+                    ++ (if String.contains "qa." model.host then
+                            "preprod."
+
+                        else
+                            ""
+                       )
+                    ++ "airlock.sre.gs.com/alertmanager/silences/create?"
+                    ++ "filter="
+                    ++ (params.matchers
+                            |> stringifyFilter
+                            |> percentEncode
+                       )
+                    ++ "&comment="
+                    ++ (params.comment |> percentEncode)
+                )
             )
 
         NavigateToSilenceFormEdit uuid ->

@@ -121,6 +121,7 @@ init flags url key =
             key
             { firstDayOfWeek = firstDayOfWeek
             }
+            (Maybe.withDefault "" url.host)
         )
 
 

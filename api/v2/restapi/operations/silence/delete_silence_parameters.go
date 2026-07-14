@@ -20,7 +20,9 @@ package silence
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
+	"strings"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
@@ -44,6 +46,12 @@ type DeleteSilenceParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
+	/*secret
+	  Required: true
+	  In: body
+	*/
+	Secret string
+
 	/*ID of the silence to get
 	  Required: true
 	  In: path
@@ -59,6 +67,16 @@ func (o *DeleteSilenceParams) BindRequest(r *http.Request, route *middleware.Mat
 	var res []error
 
 	o.HTTPRequest = r
+
+	// Read secret from body
+	if r.Body != nil {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			res = append(res, errors.NewParseError("secret", "body", "", err))
+		} else {
+			o.Secret = strings.TrimSpace(string(body))
+		}
+	}
 
 	rSilenceID, rhkSilenceID, _ := route.Params.GetOK("silenceID")
 	if err := o.bindSilenceID(rSilenceID, rhkSilenceID, route.Formats); err != nil {

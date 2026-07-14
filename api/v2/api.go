@@ -812,6 +812,14 @@ func (api *API) deleteSilenceHandler(params silence_ops.DeleteSilenceParams) mid
 	ctx, span := tracer.Start(eventrecorder.WithEventRecording(params.HTTPRequest.Context()), "api.deleteSilenceHandler")
 	defer span.End()
 
+	if api.alertmanagerConfig != nil {
+		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Secret != string(api.alertmanagerConfig.Global.SilenceSecret) {
+			msg := "Failed to delete silence: incorrect secret"
+			logger.Error(msg)
+			return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
+		}
+	}
+
 	sid := params.SilenceID.String()
 	if err := api.silences.Expire(ctx, sid); err != nil {
 		logger.Error("Failed to expire silence", "err", err)
@@ -828,6 +836,14 @@ func (api *API) postSilencesHandler(params silence_ops.PostSilencesParams) middl
 
 	ctx, span := tracer.Start(eventrecorder.WithEventRecording(params.HTTPRequest.Context()), "api.postSilencesHandler")
 	defer span.End()
+
+	if api.alertmanagerConfig != nil {
+		if len(api.alertmanagerConfig.Global.SilenceSecret) > 0 && params.Silence.Secret != string(api.alertmanagerConfig.Global.SilenceSecret) {
+			msg := "Failed to set silence: incorrect secret"
+			logger.Error(msg)
+			return silence_ops.NewPostSilencesBadRequest().WithPayload(msg)
+		}
+	}
 
 	sil, err := PostableSilenceToProto(params.Silence)
 	if err != nil {

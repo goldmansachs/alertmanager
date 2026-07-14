@@ -28,6 +28,7 @@ type alias PostableSilence =
     , comment : String
     , annotations : Maybe (Dict String String)
     , id : Maybe String
+    , secret : Maybe String
     }
 
 
@@ -41,6 +42,7 @@ decoder =
         |> required "comment" Decode.string
         |> optional "annotations" (Decode.nullable (Decode.dict Decode.string)) Nothing
         |> optional "id" (Decode.nullable Decode.string) Nothing
+        |> optional "secret" (Decode.nullable Decode.string) Nothing
 
 
 encoder : PostableSilence -> Encode.Value
@@ -53,4 +55,5 @@ encoder model =
         , ( "comment", Encode.string model.comment )
         , ( "annotations", Maybe.withDefault Encode.null (Maybe.map (Encode.dict identity Encode.string) model.annotations) )
         , ( "id", Maybe.withDefault Encode.null (Maybe.map Encode.string model.id) )
+        , ( "secret", Maybe.withDefault Encode.null (Maybe.map Encode.string model.secret) )
         ]

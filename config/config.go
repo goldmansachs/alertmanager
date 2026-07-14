@@ -367,6 +367,18 @@ func (c *Config) UnmarshalYAML(unmarshal func(any) error) error {
 		return fmt.Errorf("at most one of smtp_auth_secret & smtp_auth_secret_file must be configured")
 	}
 
+	if len(c.Global.SilenceSecret) > 0 && len(c.Global.SilenceSecretFile) > 0 {
+		return fmt.Errorf("at most one of silence_secret & silence_secret_file must be configured")
+	}
+
+	if len(c.Global.SilenceSecretFile) > 0 {
+		content, err := os.ReadFile(c.Global.SilenceSecretFile)
+		if err != nil {
+			return fmt.Errorf("could not read %s: %w", c.Global.SilenceSecretFile, err)
+		}
+		c.Global.SilenceSecret = commoncfg.Secret(strings.TrimSpace(string(content)))
+	}
+
 	if c.Global.WeChatAPISecret != "" && len(c.Global.WeChatAPISecretFile) > 0 {
 		return errors.New("at most one of wechat_api_secret & wechat_api_secret_file must be configured")
 	}
@@ -828,9 +840,11 @@ type GlobalConfig struct {
 	SMTPHello                string                 `yaml:"smtp_hello,omitempty" json:"smtp_hello,omitempty"`
 	SMTPSmarthost            HostPort               `yaml:"smtp_smarthost,omitempty" json:"smtp_smarthost,omitempty"`
 	SMTPAuthUsername         string                 `yaml:"smtp_auth_username,omitempty" json:"smtp_auth_username,omitempty"`
-	SMTPAuthPassword         commoncfg.Secret       `yaml:"smtp_auth_password,omitempty" json:"smtp_auth_password,omitempty"`
-	SMTPAuthPasswordFile     string                 `yaml:"smtp_auth_password_file,omitempty" json:"smtp_auth_password_file,omitempty"`
-	SMTPAuthSecret           commoncfg.Secret       `yaml:"smtp_auth_secret,omitempty" json:"smtp_auth_secret,omitempty"`
+	SMTPAuthPassword     commoncfg.Secret       `yaml:"smtp_auth_password,omitempty" json:"smtp_auth_password,omitempty"`
+	SMTPAuthPasswordFile string                 `yaml:"smtp_auth_password_file,omitempty" json:"smtp_auth_password_file,omitempty"`
+	SilenceSecret        commoncfg.Secret       `yaml:"silence_secret,omitempty" json:"silence_secret,omitempty"`
+	SilenceSecretFile    string                 `yaml:"silence_secret_file,omitempty" json:"silence_secret_file,omitempty"`
+	SMTPAuthSecret       commoncfg.Secret       `yaml:"smtp_auth_secret,omitempty" json:"smtp_auth_secret,omitempty"`
 	SMTPAuthSecretFile       string                 `yaml:"smtp_auth_secret_file,omitempty" json:"smtp_auth_secret_file,omitempty"`
 	SMTPAuthIdentity         string                 `yaml:"smtp_auth_identity,omitempty" json:"smtp_auth_identity,omitempty"`
 	SMTPRequireTLS           bool                   `yaml:"smtp_require_tls" json:"smtp_require_tls,omitempty"`
